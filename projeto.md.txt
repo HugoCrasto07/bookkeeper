@@ -1,0 +1,56 @@
+A Tela de Login (O "Portão")
+Objetivo: Segurança e profissionalismo. Ninguém entra no sistema sem credencial.
+
+Visual: Minimalista. Fundo escuro total. No centro, apenas o logo do BookKeeper, dois campos (Usuário/Senha) e um botão "Entrar" bem destacado (ex: Azul Neon).
+
+Por que ter: Para você aprender sobre Autenticação e Sessões no Flask (quem está logado? admin ou funcionário?).
+
+2. O Dashboard (A "Torre de Controle")
+Objetivo: Visão geral rápida. É a tela index.html que começamos a montar.
+
+Visual:
+
+Topo: 3 ou 4 "Cards" com números grandes (Ex: "150 Livros", "12 Empréstimos Ativos", "R$ 45,00 em Multas").
+
+Centro: Uma tabela pequena com "Últimas Movimentações" ou "Alertas de Atraso" (em vermelho).
+
+Por que ter: O gerente não quer ver listas, ele quer ver resumos.
+
+3. O Acervo (A "Tabela de Dados")
+Objetivo: Gerenciar os livros. É aqui que o trabalho pesado acontece.
+
+Visual: Uma tabela robusta (estilo Excel, mas bonita).
+
+Colunas: ID, Título, Autor, Status (Disponível/Emprestado), Ações.
+
+Botões de Ação: Um lápis (Editar) e uma lixeira (Excluir) em cada linha.
+
+Barra de Pesquisa no topo para filtrar livros rapidamente.
+
+Por que ter: Para você treinar a listagem de dados do banco (SELECT * FROM livros).
+
+4. O Formulário (A "Entrada de Dados")
+Objetivo: Cadastrar ou Editar um livro/usuário.
+
+Visual: Limpo e focado.
+
+Labels claros (ex: "Nome do Livro") acima dos inputs.
+
+Inputs com fundo escuro e borda suave.
+
+Botão "Salvar" verde no final.
+
+Por que ter: Para você treinar o envio de dados (POST) e validação de formulários.
+
+O Fluxo de Navegação (Sitemap)
+O usuário vai navegar assim:
+
+Login -> (Sucesso) -> Dashboard.
+
+Do Dashboard, ele clica no Menu Lateral:
+
+-> Vai para Acervo (Vê a lista).
+
+-> Clica em "Novo" -> Vai para Formulário.
+
+-> Vai para Empréstimos (Vê quem pegou o quê).
