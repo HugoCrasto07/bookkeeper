@@ -24,8 +24,7 @@ class Livro(db.Model):
     autor = db.Column(db.String(100), nullable=False)
     status = db.Column(db.String(20), default='Disponível')
     
-    # MUDANÇA IMPORTANTE: O "Carimbo" do Dono
-    # Isso cria uma coluna nova que guarda o ID do usuário dono do livro
+    # Coluna que liga o livro ao dono
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
 
 # --- ROTAS ---
@@ -40,7 +39,7 @@ def home():
                                novo_usuario=eh_novo_usuario)
     return render_template("index.html")
 
-# 2. Lista de Livros (AGORA FILTRADA)
+# 2. Lista de Livros (COM BUSCA 🔍)
 @app.route("/livros")
 def livros():
     if 'usuario_id' not in session:
@@ -48,12 +47,24 @@ def livros():
     
     id_do_dono = session['usuario_id']
     
-    # Mágica: Busca apenas os livros que têm o carimbo deste usuário
-    meus_livros = Livro.query.filter_by(usuario_id=id_do_dono).all()
+    # 1. Pega o termo que veio da barra de pesquisa (se houver)
+    termo = request.args.get('q')
     
-    return render_template("livros.html", livros=meus_livros)
+    # 2. Começa a consulta filtrando APENAS pelos livros do dono logado
+    query = Livro.query.filter_by(usuario_id=id_do_dono)
+    
+    # 3. Se tiver termo de busca, adiciona um filtro extra pelo título
+    if termo:
+        # 'contains' verifica se o termo está dentro do título
+        query = query.filter(Livro.titulo.contains(termo))
+    
+    # 4. Executa a busca no banco e pega os resultados
+    meus_livros = query.all()
+    
+    # Enviamos 'termo_busca' de volta para o HTML para ele continuar escrito na caixinha
+    return render_template("livros.html", livros=meus_livros, termo_busca=termo)
 
-# 3. Criar Livro (AGORA SALVA O DONO)
+# 3. Criar Livro
 @app.route("/criar", methods=["GET", "POST"])
 def criar():
     if 'usuario_id' not in session:
@@ -73,7 +84,7 @@ def criar():
         
     return render_template("criar.html")
 
-# 4. Editar Livro (PROTEGIDO)
+# 4. Editar Livro
 @app.route('/editar/<int:id>', methods=['GET', 'POST'])
 def editar(id):
     if 'usuario_nome' not in session:
@@ -94,7 +105,7 @@ def editar(id):
 
     return render_template('editar.html', livro=livro)
 
-# 5. Excluir Livro (PROTEGIDO)
+# 5. Excluir Livro
 @app.route('/excluir/<int:id>')
 def excluir(id):
     if 'usuario_nome' not in session:
