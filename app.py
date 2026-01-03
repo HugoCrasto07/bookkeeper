@@ -29,14 +29,32 @@ class Livro(db.Model):
 
 # --- ROTAS ---
 
-# 1. Dashboard
+# 1. Dashboard (AGORA COM ESTATÍSTICAS 📊)
 @app.route("/")
 def home():
     eh_novo_usuario = request.args.get('novo')
-    if 'usuario_nome' in session:
+    
+    # Se o usuário estiver logado, calculamos os números dele
+    if 'usuario_id' in session:
+        id_dono = session['usuario_id']
+        
+        # Conta TODOS os livros desse usuário
+        total_livros = Livro.query.filter_by(usuario_id=id_dono).count()
+        
+        # Conta só os EMPRESTADOS
+        total_emprestados = Livro.query.filter_by(usuario_id=id_dono, status='Emprestado').count()
+        
+        # Conta só os DISPONÍVEIS
+        total_disponiveis = Livro.query.filter_by(usuario_id=id_dono, status='Disponível').count()
+        
         return render_template("index.html", 
                                nome=session['usuario_nome'], 
-                               novo_usuario=eh_novo_usuario)
+                               novo_usuario=eh_novo_usuario,
+                               total=total_livros,
+                               emprestados=total_emprestados,
+                               disponiveis=total_disponiveis)
+                               
+    # Se não estiver logado, mostra a tela normal sem números
     return render_template("index.html")
 
 # 2. Lista de Livros (COM BUSCA 🔍)
@@ -46,22 +64,17 @@ def livros():
         return redirect(url_for('login'))
     
     id_do_dono = session['usuario_id']
-    
-    # 1. Pega o termo que veio da barra de pesquisa (se houver)
     termo = request.args.get('q')
     
-    # 2. Começa a consulta filtrando APENAS pelos livros do dono logado
+    # Começa filtrando pelo dono
     query = Livro.query.filter_by(usuario_id=id_do_dono)
     
-    # 3. Se tiver termo de busca, adiciona um filtro extra pelo título
+    # Se tiver busca, filtra também pelo título
     if termo:
-        # 'contains' verifica se o termo está dentro do título
         query = query.filter(Livro.titulo.contains(termo))
     
-    # 4. Executa a busca no banco e pega os resultados
     meus_livros = query.all()
     
-    # Enviamos 'termo_busca' de volta para o HTML para ele continuar escrito na caixinha
     return render_template("livros.html", livros=meus_livros, termo_busca=termo)
 
 # 3. Criar Livro
@@ -73,9 +86,8 @@ def criar():
     if request.method == "POST":
         titulo = request.form['titulo']
         autor = request.form['autor']
-        dono = session['usuario_id'] # Pega o ID de quem está logado
+        dono = session['usuario_id']
         
-        # Cria o livro já carimbando quem é o dono
         novo_livro = Livro(titulo=titulo, autor=autor, usuario_id=dono)
         
         db.session.add(novo_livro)
@@ -92,9 +104,8 @@ def editar(id):
 
     livro = Livro.query.get_or_404(id)
     
-    # Segurança: Se o livro não for seu, você é expulso
     if livro.usuario_id != session['usuario_id']:
-        return "<h3>Acesso Negado: Este livro pertence a outro usuário!</h3>"
+        return "<h3>Acesso Negado!</h3>"
 
     if request.method == 'POST':
         livro.titulo = request.form['titulo']
@@ -113,7 +124,6 @@ def excluir(id):
         
     livro = Livro.query.get_or_404(id)
     
-    # Segurança
     if livro.usuario_id != session['usuario_id']:
         return "<h3>Acesso Negado!</h3>"
         

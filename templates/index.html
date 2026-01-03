@@ -1,53 +1,69 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row mt-4">
-    <div class="col-md-12 text-center">
-        
-        {% if session['usuario_nome'] %}
-            
-            {% if novo_usuario %}
-                <h1 class="display-4 text-white">Seja muito bem-vindo, <span class="text-success">{{ session['usuario_nome'] }}</span>!</h1>
-                <p class="lead text-white">Seu cadastro foi realizado com sucesso. Que tal começar agora?</p>
-            {% else %}
-                <h1 class="display-4 text-white">Bem-vindo de volta, <span class="text-primary">{{ session['usuario_nome'] }}</span>!</h1>
-                <p class="lead text-secondary">O sistema está pronto para gerenciar seu acervo.</p>
-            {% endif %}
-            
-            <div class="mt-4">
-                <a href="/livros" class="btn btn-lg btn-primary shadow">📖 Acessar Meus Livros</a>
-                <a href="/criar" class="btn btn-lg btn-outline-success shadow">➕ Cadastrar Novo Livro</a>
-            </div>
 
+<div class="text-center py-5">
+    {% if nome %}
+        {% if novo_usuario %}
+            <h1 class="display-4">Seja muito bem-vindo, <span class="text-success">{{ nome }}</span>!</h1>
+            <p class="lead text-muted">Seu cadastro foi realizado com sucesso. Que tal começar agora?</p>
         {% else %}
-
-            <h1 class="display-4 text-white">Bem-vindo ao BookKeeper</h1>
-            <p class="lead text-secondary">Seu sistema pessoal de organização de livros.</p>
-            <a href="/login" class="btn btn-lg btn-light mt-3 shadow">Faça Login para Começar</a>
-
+            <h1 class="display-4">Bem-vindo de volta, <span class="text-primary">{{ nome }}</span>!</h1>
+            <p class="lead text-muted">O sistema está pronto para gerenciar seu acervo.</p>
         {% endif %}
+        
+        <div class="mt-4">
+            <a href="/livros" class="btn btn-primary btn-lg mx-2">📖 Acessar Meus Livros</a>
+            <a href="/criar" class="btn btn-outline-success btn-lg mx-2">➕ Cadastrar Novo Livro</a>
+        </div>
+
+    {% else %}
+        <h1 class="display-4">Organize seus livros com o <span class="text-primary fw-bold">BookKeeper</span></h1>
+        <p class="lead text-muted">A maneira mais simples de gerenciar sua biblioteca pessoal.</p>
+        <div class="mt-4">
+            <a href="/login" class="btn btn-primary btn-lg px-5">Entrar no Sistema</a>
+        </div>
+    {% endif %}
+
+    <div class="row mt-5">
+        
+        <div class="col-md-4">
+            <div class="card bg-dark border-secondary mb-3">
+                <div class="card-body text-center">
+                    <h1 class="display-4 text-primary fw-bold">
+                        {% if total is defined %}{{ total }}{% else %}0{% endif %}
+                    </h1>
+                    <h5 class="card-title text-white">Livros no Acervo</h5>
+                    <p class="card-text text-muted">Sua coleção completa</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-dark border-secondary mb-3">
+                <div class="card-body text-center">
+                    <h1 class="display-4 text-warning fw-bold">
+                        {% if emprestados is defined %}{{ emprestados }}{% else %}0{% endif %}
+                    </h1>
+                    <h5 class="card-title text-white">Emprestados</h5>
+                    <p class="card-text text-muted">Livros com amigos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-dark border-secondary mb-3">
+                <div class="card-body text-center">
+                    <h1 class="display-4 text-success fw-bold">
+                        {% if disponiveis is defined %}{{ disponiveis }}{% else %}0{% endif %}
+                    </h1>
+                    <h5 class="card-title text-white">Disponíveis</h5>
+                    <p class="card-text text-muted">Prontos para leitura</p>
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>
 
-<div class="row mt-5">
-    <div class="col-md-4">
-        <div class="card bg-dark border-secondary text-white text-center p-3 mb-3">
-            <h3>📚 Acervo</h3>
-            <p class="text-muted">Gerencie sua coleção completa</p>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card bg-dark border-secondary text-white text-center p-3 mb-3">
-            <h3>⚡ Rápido</h3>
-            <p class="text-muted">Cadastro e busca instantâneos</p>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card bg-dark border-secondary text-white text-center p-3 mb-3">
-            <h3>🔒 Seguro</h3>
-            <p class="text-muted">Seus dados protegidos com login</p>
-        </div>
-    </div>
-</div>
 {% endblock %}
