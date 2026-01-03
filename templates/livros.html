@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>📚 Acervo Bibliográfico</h3>
+    <a href="/criar" class="btn btn-sm btn-success">
+        + Novo Livro
+    </a>
+</div>
+
+<div class="card bg-dark border-secondary">
+    <table class="table table-dark table-hover mb-0">
+        <thead>
+            <tr>
+                <th scope="col">#ID</th>
+                <th scope="col">Título</th>
+                <th scope="col">Autor</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="text-end">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for livro in livros %}
+            <tr>
+                <td>{{ livro.id }}</td>
+                <td>{{ livro.titulo }}</td>
+                <td>{{ livro.autor }}</td>
+                <td>
+                    {% if livro.status == 'Disponível' %}
+                        <span class="badge bg-success">Disponível</span>
+                    {% elif livro.status == 'Emprestado' %}
+                        <span class="badge bg-warning text-dark">Emprestado</span>
+                    {% elif livro.status == 'Lendo' %}
+                        <span class="badge bg-info text-dark">Lendo</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ livro.status }}</span>
+                    {% endif %}
+                </td>
+                <td class="text-end">
+                    <a href="/editar/{{ livro.id }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                    <a href="/excluir/{{ livro.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja apagar este livro?')">Excluir</a>
+                </td>
+            </tr>
+            {% endfor %}
+            
+            {% if not livros %}
+            <tr>
+                <td colspan="5" class="text-center text-muted py-3">
+                    Nenhum livro encontrado no banco de dados.
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

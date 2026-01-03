@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card bg-dark border-secondary">
+            <div class="card-header border-secondary">
+                <h4 class="mb-0 text-primary">Editar Livro</h4>
+            </div>
+            <div class="card-body">
+                
+                <form action="/editar/{{ livro.id }}" method="POST">
+                    
+                    <div class="mb-3">
+                        <label for="titulo" class="form-label">Título do Livro</label>
+                        <input type="text" class="form-control bg-dark text-white" 
+                               id="titulo" name="titulo" 
+                               value="{{ livro.titulo }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="autor" class="form-label">Autor</label>
+                        <input type="text" class="form-control bg-dark text-white" 
+                               id="autor" name="autor" 
+                               value="{{ livro.autor }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Status Atual</label>
+                        <select class="form-select bg-dark text-white" name="status">
+                            <option value="Disponível" {% if livro.status == 'Disponível' %}selected{% endif %}>🟢 Disponível</option>
+                            <option value="Emprestado" {% if livro.status == 'Emprestado' %}selected{% endif %}>🟡 Emprestado</option>
+                            <option value="Lendo" {% if livro.status == 'Lendo' %}selected{% endif %}>🔵 Lendo</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        <a href="/livros" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
