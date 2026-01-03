@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card bg-dark border-secondary">
+            <div class="card-header border-secondary">
+                <h4 class="mb-0 text-success">Cadastrar Novo Livro</h4>
+            </div>
+            <div class="card-body">
+                
+                <form action="/criar" method="POST">
+                    
+                    <div class="mb-3">
+                        <label for="titulo" class="form-label">Título do Livro</label>
+                        <input type="text" class="form-control bg-dark text-white" 
+                               id="titulo" name="titulo" required placeholder="Ex: O Senhor dos Anéis">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="autor" class="form-label">Autor</label>
+                        <input type="text" class="form-control bg-dark text-white" 
+                               id="autor" name="autor" required placeholder="Ex: J.R.R. Tolkien">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Salvar Livro</button>
+                        <a href="/livros" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
