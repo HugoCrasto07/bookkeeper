@@ -29,32 +29,30 @@ class Livro(db.Model):
 
 # --- ROTAS ---
 
-# 1. Dashboard (AGORA COM ESTATÍSTICAS 📊)
+# 1. Dashboard (COM ESTATÍSTICAS COMPLETAS 📊)
 @app.route("/")
 def home():
     eh_novo_usuario = request.args.get('novo')
     
-    # Se o usuário estiver logado, calculamos os números dele
     if 'usuario_id' in session:
         id_dono = session['usuario_id']
         
-        # Conta TODOS os livros desse usuário
+        # 1. Total Geral
         total_livros = Livro.query.filter_by(usuario_id=id_dono).count()
         
-        # Conta só os EMPRESTADOS
+        # 2. Contagens Específicas
         total_emprestados = Livro.query.filter_by(usuario_id=id_dono, status='Emprestado').count()
-        
-        # Conta só os DISPONÍVEIS
         total_disponiveis = Livro.query.filter_by(usuario_id=id_dono, status='Disponível').count()
+        total_lendo = Livro.query.filter_by(usuario_id=id_dono, status='Lendo').count() # <--- NOVO
         
         return render_template("index.html", 
                                nome=session['usuario_nome'], 
                                novo_usuario=eh_novo_usuario,
                                total=total_livros,
                                emprestados=total_emprestados,
-                               disponiveis=total_disponiveis)
+                               disponiveis=total_disponiveis,
+                               lendo=total_lendo) # <--- Enviando para o HTML
                                
-    # Se não estiver logado, mostra a tela normal sem números
     return render_template("index.html")
 
 # 2. Lista de Livros (COM BUSCA 🔍)
@@ -66,10 +64,8 @@ def livros():
     id_do_dono = session['usuario_id']
     termo = request.args.get('q')
     
-    # Começa filtrando pelo dono
     query = Livro.query.filter_by(usuario_id=id_do_dono)
     
-    # Se tiver busca, filtra também pelo título
     if termo:
         query = query.filter(Livro.titulo.contains(termo))
     
